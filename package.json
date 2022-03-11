@@ -1,0 +1,29 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend for sendIT web app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IanGathuita/sendIT.git"
+  },
+  "author": "Ian Joseph Gitaka",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IanGathuita/sendIT/issues"
+  },
+  "homepage": "https://github.com/IanGathuita/sendIT#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "joi": "^17.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "mssql": "^8.0.2",
+    "uuid": "^8.3.2"
+  }
+}
