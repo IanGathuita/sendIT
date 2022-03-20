@@ -1,0 +1,13 @@
+.benefit{
+    background-color: var(--colorPrimaryLight);
+    padding:8px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    max-width: 100%;
+}
+@media only screen and (min-width:768px){
+    .benefit{
+    flex-basis: 32%;
+    }
+
+}

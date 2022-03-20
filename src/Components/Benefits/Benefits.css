@@ -1,0 +1,12 @@
+.benefits{
+    display: flex;
+    flex-direction: column;
+    
+}
+
+@media only screen and (min-width:768px){
+    .benefits{
+        justify-content: space-between;
+        flex-direction: row;
+    }
+}

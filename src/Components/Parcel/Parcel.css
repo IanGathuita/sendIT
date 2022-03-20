@@ -1,0 +1,11 @@
+.parcel{
+    border-radius: 8px;
+    padding: 16px 8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--colorPrimaryLight);
+    box-shadow: 2px 2px 4px -1px var(--colorPrimaryDark);
+    margin-bottom: 12px;
+}

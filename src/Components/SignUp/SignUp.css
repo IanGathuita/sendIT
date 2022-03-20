@@ -1,0 +1,33 @@
+.second-form-section{
+    display: none;
+}
+.form-buttons{
+    display:flex;
+    justify-content: space-between;
+       
+}
+.form-buttons button{
+    margin-top: 16px; 
+}
+.first-form-section button:last-child{
+    margin-top: 16px;
+    
+}
+.ghost-button{
+    background-color: var(--colorPrimaryLight);
+    border:1px solid var(--colorPrimaryDark);
+    color: var(--colorPrimaryDark);
+}
+
+@media only screen and (min-width:768px) {
+    .form-desktop{
+        padding: 16px 16%;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 8px;
+        margin-top: 16px;
+        /* border:1px solid var(--colorPrimaryDark); */
+        box-shadow: 1px 1px 8px -1px var(--colorPrimaryDark);
+    }
+    
+}

@@ -1,0 +1,70 @@
+.step-progress-bar{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    position: relative;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+.step-progress-bar-wrapper{
+    margin-top: 32px;
+    margin-bottom: 32px;
+}
+.progress-text{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: center;
+}
+.progress-text h3{
+    text-align: center;
+    margin-right: 0;
+    flex-basis: 12%;
+}
+.step{
+    border: 4px solid var(--colorPrimaryDark);
+    padding: 32px;
+    border-radius: 50%;
+    width: 50px;
+    height:50px;
+    background-color: white;
+}
+
+.step i svg{
+    width: 100%;
+    height: 100%;
+}
+.defaultBar{
+    position: absolute;
+    bottom: 40%;
+    height: 8px;
+    width:100%;
+    background-color: var(--colorPrimaryDark);
+    z-index: -2;
+    border-radius: 16px;
+}
+.currentProgressBar{
+    position: absolute;
+    bottom: 40%;
+    height: 8px;
+    width:50%;
+    background-color: var(--colorTertiary);
+    z-index: -1;
+    border-radius: 16px;
+}
+.step:nth-child(3){
+    border-color: var(--colorTertiary);
+    background-color: var(--colorTertiary);
+}
+.step:nth-child(3) i{
+    color:white;
+}
+@media only screen and (min-width:768px) {
+    .step{
+        width: 125px;
+        height:125px;
+    }
+
+}

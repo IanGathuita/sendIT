@@ -1,0 +1,18 @@
+.accordion{
+    border:1px solid var(--colorPrimaryDark);
+    margin-bottom: 16px;
+    /* border-radius: 8px; */
+}
+.accordion-header{
+    padding: 8px;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    background-color: var(--colorPrimaryLight);
+    /* border-radius: 8px 8px 0 0; */
+}
+
+.accordion-body{
+    padding: 8px;
+    border-top: 1px solid var(--colorPrimaryDark);
+}

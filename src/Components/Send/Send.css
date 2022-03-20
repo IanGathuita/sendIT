@@ -1,0 +1,103 @@
+input,textarea{
+    padding:8px;
+    font-size: 16px;
+    line-height: 26px;
+    border:1px solid var(--colorPrimaryDark);
+    max-width: 100%;
+    width: 100%;
+    border-radius: 4px;
+}
+input:focus, textarea:focus{
+    border:1px solid var(--colorTertiary);
+    background-color: rgba(0,0,255,0.1);
+}
+label{
+    display: inline-block;
+    margin-bottom:4px;
+    margin-top: 8px;
+}
+.error{
+    color:red;
+    display: none;
+}
+form button{
+    margin-top: 8px;
+}
+input.valid, textarea.valid{
+    border:1px solid green;
+    background-color: rgba(0,255,0,0.1);
+}
+input.invalid, textarea.invalid{
+    border:1px solid red;
+    background-color: rgba(255,0,0,0.1);
+}
+ol{
+    list-style-position: inside;
+    margin: 16px 0;
+}
+ol li{
+    margin-bottom: 8px;
+}
+#sendWrapper{
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+@media only screen and (min-width:768px) {
+    #sendSection{
+        padding-top: 0;
+        padding-bottom: 0;
+        margin: 0 0 0 16vw;
+    }
+   
+    #sendSection div, #sendSection form{
+        flex-basis: 50%;
+    }
+
+
+    #sendForm{
+        border:1px solid var(--colorPrimaryDark);
+        border-radius: 8px;
+        padding:32px 8px;
+        margin-top: 32px;
+        z-index:2;
+        background-color: #ffffff;
+        box-shadow: 1px 1px 8px -1px var(--colorPrimaryDark);   
+    }
+    #sendWrapper{
+        display: flex;
+        flex-direction: row;
+        padding-top: 0;
+        background-color: var(--colorPrimaryLight);
+        position: relative;
+        top:0;
+        left:0;
+        right:0;
+        left:0;
+        overflow: hidden;
+        padding: 32px 8px 32px 0;
+        padding-right: 16vw;
+    }
+    #sendWrapper::before{
+        content: "";
+        position: absolute;
+        opacity: 0.9;
+        top:0;
+        left:0;
+        right:0;
+        left:0;
+        width:64%;
+        min-height: 100%;
+        background-color: #ffffff;
+        transform: skew(-30deg) ;
+        transform-origin: top;
+        
+    }
+    #sendPageText{
+        z-index:1;
+        padding-right: 16px;
+    }
+    
+  }
