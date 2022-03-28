@@ -22,11 +22,11 @@ export default function About() {
             <div>
                 <h3>Contact information</h3>
                 <ul className='contact-list'>
-                    <li><FaPhone/>Phone</li>
-                    <li><FaEnvelope/> Email</li>
-                    <li><FaFacebook/> Facebook</li>                    
-                    <li><FaTwitter/> Twitter</li>
-                    <li><FaInstagramSquare/> Instagram</li>
+                    <li><FaPhone/> 0712 345 678</li>
+                    <li><FaEnvelope/> sendit@gmail.com</li>
+                    <li><FaFacebook/> sendit</li>                    
+                    <li><FaTwitter/> sendit</li>
+                    <li><FaInstagramSquare/> sendit</li>
                 </ul>
             </div>
 

@@ -1,7 +1,10 @@
 import avatar from '../../Images/Ian.jpg';
 import css from './Header.module.css';
-import { Link,useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch,useSelector } from "react-redux";
+import { LoginAction } from "../../Redux/Actions/LoginActions";
+import { IsAdminAction } from '../../Redux/Actions/IsAdminAction';
+
 
 
 
@@ -17,24 +20,38 @@ const handleMenuClose = () => {
 }
 
 
-export default function Header(){
+export default function Header() {
     const loginStatus = useSelector(state => state.loggedIn);
+    const isAdmin = useSelector(state => state.isAdmin);
+    console.log("status", loginStatus,isAdmin);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
-    return(
+    return (
         <header>
-            <span  id={css.menuIcon} onClick = {handleMenuOpen}>&#9776;</span>
+            <span id={css.menuIcon} onClick={handleMenuOpen}>&#9776;</span>
             <h3><Link to='/'>sendIT</Link></h3>
             <nav>
                 <ul>
-                <li id={css.closeMenuIcon} onClick = {handleMenuClose}>&times;</li>
-                    <li><Link to='/'>Home</Link></li>
-                    <li><Link to='/parcels'>Parcels</Link></li>
-                    <li><Link to='/send'>Send</Link></li>
-                    <li><Link to='/about'>About</Link></li>
+                    <li id={css.closeMenuIcon} onClick={handleMenuClose}>&times;</li>
+                    <li><Link to='/' onClick={handleMenuClose}>Home</Link></li>
+                    <li><Link to='/parcels' onClick={handleMenuClose} >Parcels</Link></li>
+                    <li><Link to='/send' onClick={handleMenuClose}>Send</Link></li>
+                    <li><Link to='/about' onClick={handleMenuClose}>About</Link></li>
+
+                    { (loginStatus && isAdmin) ? <li><Link to='/admindashboard' onClick={handleMenuClose}>Dashboard</Link></li> : ""}
+                    
                     {/* <li><Link to='/signup'>Sign up</Link></li> */}
                 </ul>
             </nav>
-            { loginStatus ? <img src={avatar} id={css.avatar} ></img> : <button id = {css.loginBtn} onClick={() => {navigate('/login');}}>Log in</button>}
+            {loginStatus ?
+                <button id={css.logoutBtn} onClick={() => {
+                    const status = dispatch(LoginAction({ "loggedIn": false }));
+                    localStorage.removeItem('x-access-token');
+                    localStorage.removeItem('x-access-token-expiration');
+                    navigate('/');
+                }}>Log out</button>
+                :
+                <button id={css.loginBtn} onClick={() => { navigate('/login'); }}>Log in</button>}
         </header>
     );
 }

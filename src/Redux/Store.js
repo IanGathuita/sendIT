@@ -1,6 +1,6 @@
 import {useStore } from "react-redux";
 import { createStore } from "redux";
-import LoginReducer from "./Reducers/LoginReducer";
+import SendItReducer from "./Reducers/SendItReducer";
 
-const store = createStore(LoginReducer);
+const store = createStore(SendItReducer);
 export default store;

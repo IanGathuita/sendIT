@@ -1,1 +1,9 @@
-export const IS_LOGGED_IN = "add movie";
+export const IS_LOGGED_IN = "is logged in";
+export const SENT_PARCELS = "sent parcels";
+export const RECEIVED_PARCELS = "received parcels";
+export const SIGN_UP = "sign up";
+export const ALL_USERS = "all users";
+export const ALL_PARCELS= "all parcels";
+export const DELETE_USER= "delete user";
+export const DELETE_PARCEL= "delete parcel";
+export const IS_ADMIN = 'is admin'

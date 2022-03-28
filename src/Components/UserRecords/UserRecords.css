@@ -1,4 +1,4 @@
-.parcel{
+.record{
     border-radius: 8px;
     padding: 16px 8px;
     display: flex;
@@ -9,9 +9,22 @@
     box-shadow: 2px 2px 4px -1px var(--colorPrimaryDark);
     margin-bottom: 12px;
 }
-.parcel h4{
+.record h4{
     flex-basis: 30%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    flex-grow: 1;
+}
+.record i{
+    flex-basis: 10%;
+    flex-grow: 0;
+    cursor: pointer;
+}
+
+@media only screen and (min-width:768px) {
+    .user i{
+        flex-basis: 5%;
+    }
+
 }

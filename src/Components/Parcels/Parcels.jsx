@@ -1,5 +1,6 @@
 import css from './Parcels.css';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import SentParcels from '../SentParcels/SentParcels';
 import ReceivedParcels from '../ReceivedParcels/ReceivedParcels';
 function handleTabsClick(e){
@@ -14,9 +15,11 @@ function handleTabsClick(e){
     
 }
 export default function Parcels(){
+    const loginStatus = useSelector(state => state.loggedIn);
     const [onSentTab,setOnSentTab] = useState(true);
     let tabToDisplay = onSentTab ? <SentParcels></SentParcels> : <ReceivedParcels></ReceivedParcels>;
     return(
+        loginStatus? 
         <section>
             <h1>Parcels</h1>
             <p>You can view the parcels that you have sent and received on this page, and their progress.
@@ -29,6 +32,10 @@ export default function Parcels(){
             <div className="userParcels">
                 {tabToDisplay}
             </div>
-        </section>  
+        </section> 
+        :
+        <section>
+            <h2>Please log in to see your parcel information</h2>
+        </section> 
     );
 }

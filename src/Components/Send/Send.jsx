@@ -1,6 +1,10 @@
 import css from './Send.css';
 import { useState } from 'react';
 import Accordion from '../Accordion/Accordion';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import notifySuccess from "../../Helpers/notifySuccess";
+import notifyFailure from "../../Helpers/notifyFailure";
 
 const kenyanNumberPattern = /^\+254\d{9}$/;
 const locationPattern = /^(\w|\d |\s)+$/;
@@ -60,11 +64,19 @@ const handleKeyUp = (e,value) => {
 
 
 export default function Send(){
-    const [receiversNumber,setReceiversNumber] = useState('');
-    const [startLocation,setStartLocation] = useState('');
-    const [endLocation,setEndLocation] = useState('');
-    const [description,setDescription] = useState('');
-    return(
+
+    const [parcel,setParcel] = useState({
+        receiversNumber: "",
+        startLocation: "",
+        endLocation: "",
+        description: ""
+    });
+    
+    
+    const loggedIn = useSelector(state => state.loggedIn);
+    const navigate = useNavigate();
+   
+    return (loggedIn ? (
         <section id='sendSection'>
             <div id="sendWrapper">
             <div id='sendPageText'>
@@ -79,32 +91,76 @@ export default function Send(){
             </div>
             <form id='sendForm'>
                 <label htmlFor="receiversNumber">Receiver's number</label><br></br>
-                <input id="receiversNumber"  value={receiversNumber} onChange={(e) => {
-                    setReceiversNumber(e.target.value);
-                }} onKeyUp = {(e) => {handleKeyUp(e,receiversNumber)}}></input><br></br>
+                <input id="receiversNumber"  value={parcel.receiversNumber} onChange={ (e) => {
+                        setParcel({...parcel, receiversNumber : e.target.value})
+                    }} onKeyUp = {(e) => {handleKeyUp(e,parcel.receiversNumber)}}></input><br></br>
                 <p className="error">Number must be in the form +254XXXXXXXXX</p>
 
                 <label htmlFor="startLocation">Start location</label><br></br>
-                <input id ="startLocation" value={startLocation} onChange={(e) => {
-                    setStartLocation(e.target.value);
-                }} onKeyUp = {(e) => {handleKeyUp(e,startLocation)}}></input><br></br>
+                <input id ="startLocation" value={parcel.startLocation} onChange={ (e) => {
+                        setParcel({...parcel, startLocation : e.target.value})
+                    }} onKeyUp = {(e) => {handleKeyUp(e,parcel.startLocation)}}></input><br></br>
                 <p className="error">Start location cannot be empty</p>
 
                 <label htmlFor="endLocation">End location</label><br></br>
-                <input id="endLocation" value={endLocation} onChange={(e) => {
-                    setEndLocation(e.target.value);
-                }} onKeyUp = {(e) => {handleKeyUp(e,endLocation)}}></input><br></br>
+                <input id="endLocation" value={parcel.endLocation} onChange={ (e) => {
+                        setParcel({...parcel, endLocation : e.target.value})
+                    }} onKeyUp = {(e) => {handleKeyUp(e,parcel.endLocation)}}></input><br></br>
                 <p className="error">End location cannot be empty</p>
 
                 <label htmlFor="description">Description</label><br></br>
-                <textarea id="description" value={description} onChange={(e) => {
-                    setDescription(e.target.value);
-                }} onKeyUp = {(e) => {handleKeyUp(e,description)}}></textarea><br></br>
+                <textarea id="description" value={parcel.description} onChange={ (e) => {
+                        setParcel({...parcel, description : e.target.value})
+                    }} onKeyUp = {(e) => {handleKeyUp(e,parcel.description)}}></textarea><br></br>
                 <p className="error">Description cannot be empty</p>
-                <button className='cta'>Send parcel</button>
+                <button className='cta' onClick={
+                    (e) => {
+                        e.preventDefault();
+                        if(!loggedIn){
+                            window.alert("Please log in to send a parcel");
+                            return;
+                        }
+                        
+                        const sendParcelBody = JSON.stringify({ "receiver_number": parcel.receiversNumber,"start_location": parcel.startLocation,"end_location" : parcel.endLocation,"description":parcel.description});
+                        console.log(sendParcelBody);
+                        fetch("/api/parcels", { method: "POST", headers: 
+                              { "content-type": "application/json",'x-access-token': localStorage.getItem('x-access-token') },
+                             body: sendParcelBody })
+                            .then(res => res.json())
+                            .then(resJson => {
+                                console.log(resJson);
+                                //error can be an array object with multiple validation errors
+                                if(resJson.err && typeof(resJson.err) === 'object'){
+                                    resJson.err.forEach((error) => {
+                                        notifyFailure(error.message);
+                                    })
+                                }
+                                else if(resJson.err){
+                                    
+                                    notifyFailure(resJson.err);
+                                    console.log(resJson.err);
+                                }  
+                                else{                             
+                                    console.log(resJson);
+                                    notifySuccess("Parcel sent")
+                                    navigate('/parcels');
+                                }
+                            })
+                            .catch(e => {
+                                console.log(e.message);
+                                notifyFailure(e.message)}
+                            )
+                    }
+                }>Send parcel</button>
             </form>
             </div>
         </section>
     
+    )
+    :
+    <section>
+    <h3>Please log in to send a parcel</h3>
+    </section>
     );
+    
 }
