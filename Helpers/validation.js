@@ -30,7 +30,7 @@ function validateParcel(parcel){
         is_updated:Joi.number().integer().min(0).max(1), 
         is_sent:Joi.number().integer().min(0).max(1),
         is_delivered:Joi.number().integer().min(0).max(1),
-        current_location:Joi.string().min(1).max(100).required(),
+        current_location:Joi.string().min(1).max(100),
         sender_id:Joi.string().uuid({version:'uuidv4'}).required()
     }).options({ abortEarly: false });
 

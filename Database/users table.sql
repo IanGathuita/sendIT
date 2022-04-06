@@ -12,3 +12,5 @@ is_sent  INT DEFAULT 0
 
 --added a constraint to make email column unique.
 ALTER TABLE [Send it].[dbo].[users] ADD CONSTRAINT UQ_email UNIQUE(email);
+--changed length to 60 so that a bcrypt hashed password can 'fit' in the column
+ALTER TABLE [Send it].[dbo].[users] ALTER COLUMN password VARCHAR(60);
