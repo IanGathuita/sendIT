@@ -12,7 +12,10 @@ export default function About() {
 
                 <div>
                     <h1>About us</h1>
-                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium eveniet asperiores vero quis natus obcaecati, repellendus enim eligendi eius dignissimos libero sit nihil ab, veritatis ipsum quibusdam? Quae quam illo odio vero ullam quasi ad? Non commodi assumenda quis pariatur natus porro odit nemo totam, quidem repudiandae quasi neque doloribus?</p>
+                    <p>sendIT is the biggest courier service provider in Kenya. We are known for delivering packages to our customers in a swift and secure manner. We take pride
+in having the cheapest costs in the industry.This is a way of giving back to our customers. We offer standard delivery services, same day delivery, parcel services and
+luggage delivery services.
+</p>
                 </div>
 
                 <div>
@@ -22,11 +25,11 @@ export default function About() {
             <div>
                 <h3>Contact information</h3>
                 <ul className='contact-list'>
-                    <li><FaPhone/> 0712 345 678</li>
-                    <li><FaEnvelope/> sendit@gmail.com</li>
-                    <li><FaFacebook/> sendit</li>                    
-                    <li><FaTwitter/> sendit</li>
-                    <li><FaInstagramSquare/> sendit</li>
+                    <li><FaPhone/> <a href="tel:0712345678"></a>0712 345 678</li>
+                    <li><FaEnvelope/> <a href="mailto:sendit@gmail.com">sendit@gmail.com</a></li>
+                    <li><FaFacebook/> <a href="https://www.facebook.com/">sendit</a></li>                    
+                    <li><FaTwitter/> <a href="https://www.twitter.com/">sendit</a></li>
+                    <li><FaInstagramSquare/> <a href="https://www.instagram.com/">sendit</a></li>
                 </ul>
             </div>
 

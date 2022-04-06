@@ -10,6 +10,12 @@
 .contact-list svg{
     margin-right: 8px;
 }
+.contact-list li{
+    margin-bottom:8px;
+}
+.contact-list a{
+    color:var(--colorPrimaryDark);
+}
 @media only screen and (min-width:768px) {
     .about{
         display: flex;
@@ -24,5 +30,7 @@
         width: 100% ;
         height: auto;
     }
+    
+
     
   }
