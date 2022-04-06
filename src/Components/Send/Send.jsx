@@ -1,10 +1,15 @@
 import css from './Send.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Accordion from '../Accordion/Accordion';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
+import { SEND_PARCEL_FAILURE } from '../../Redux/Constants';
+
+import { SendParcelAction } from '../../Redux/Actions/UsersActions';
 import notifySuccess from "../../Helpers/notifySuccess";
 import notifyFailure from "../../Helpers/notifyFailure";
+
+
 
 const kenyanNumberPattern = /^\+254\d{9}$/;
 const locationPattern = /^(\w|\d |\s)+$/;
@@ -65,16 +70,66 @@ const handleKeyUp = (e,value) => {
 
 export default function Send(){
 
+    
+
     const [parcel,setParcel] = useState({
         receiversNumber: "",
         startLocation: "",
         endLocation: "",
         description: ""
     });
+
+    
+
+   
+
+    const dispatch = useDispatch();
     
     
     const loggedIn = useSelector(state => state.loggedIn);
+    const isParcelSent = useSelector(state => state.isParcelSent);
+    const error = useSelector(state => state.error);
+    console.log("isParcelSent ",isParcelSent)
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if(isParcelSent){
+            notifySuccess("Parcel sent")
+            navigate('/parcels');
+            //dispatch this action to reset isParcelSent after toast is shown
+            dispatch({
+                type: SEND_PARCEL_FAILURE,
+                error: ""
+            });
+        }
+    },[isParcelSent]);
+
+    
+    useEffect(() => {
+        if(error.err){
+            if(typeof(error.err) === 'object'){
+            //loop through array of error objects 
+            let errors = "";
+            error.err.forEach((errObj) => {
+                errors = `${errors} ${errObj.message} ` + '\n';
+    
+            });
+            notifyFailure(errors);
+        }else{
+            notifyFailure(error.err);
+        }
+            dispatch({
+                type: SEND_PARCEL_FAILURE,
+                error: ""
+            });
+        }
+
+    },[error]);
+
+    
+
+    
+    
    
     return (loggedIn ? (
         <section id='sendSection'>
@@ -123,33 +178,17 @@ export default function Send(){
                         
                         const sendParcelBody = JSON.stringify({ "receiver_number": parcel.receiversNumber,"start_location": parcel.startLocation,"end_location" : parcel.endLocation,"description":parcel.description});
                         console.log(sendParcelBody);
-                        fetch("/api/parcels", { method: "POST", headers: 
-                              { "content-type": "application/json",'x-access-token': localStorage.getItem('x-access-token') },
-                             body: sendParcelBody })
-                            .then(res => res.json())
-                            .then(resJson => {
-                                console.log(resJson);
-                                //error can be an array object with multiple validation errors
-                                if(resJson.err && typeof(resJson.err) === 'object'){
-                                    resJson.err.forEach((error) => {
-                                        notifyFailure(error.message);
-                                    })
-                                }
-                                else if(resJson.err){
-                                    
-                                    notifyFailure(resJson.err);
-                                    console.log(resJson.err);
-                                }  
-                                else{                             
-                                    console.log(resJson);
-                                    notifySuccess("Parcel sent")
-                                    navigate('/parcels');
-                                }
-                            })
-                            .catch(e => {
-                                console.log(e.message);
-                                notifyFailure(e.message)}
-                            )
+                        dispatch(SendParcelAction(sendParcelBody));
+
+                        // fetch("/api/parcels", { method: "POST", headers: 
+                        //       { "content-type": "application/json",'x-access-token': localStorage.getItem('x-access-token') },
+                        //      body: sendParcelBody })
+                        //     .then(res => res.json())
+                        //     .then(resJson => {                                
+                        //         console.log(resJson);
+                        //         navigate('/parcels');
+                        //     })
+                        //     .catch(e => console.log(e.message))
                     }
                 }>Send parcel</button>
             </form>

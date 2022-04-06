@@ -2,8 +2,8 @@ import avatar from '../../Images/Ian.jpg';
 import css from './Header.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch,useSelector } from "react-redux";
-import { LoginAction } from "../../Redux/Actions/LoginActions";
-import { IsAdminAction } from '../../Redux/Actions/IsAdminAction';
+import { LogoutAction } from '../../Redux/Actions/UsersActions';
+import notifySuccess from "../../Helpers/notifySuccess";
 
 
 
@@ -23,7 +23,6 @@ const handleMenuClose = () => {
 export default function Header() {
     const loginStatus = useSelector(state => state.loggedIn);
     const isAdmin = useSelector(state => state.isAdmin);
-    console.log("status", loginStatus,isAdmin);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     return (
@@ -37,17 +36,17 @@ export default function Header() {
                     <li><Link to='/parcels' onClick={handleMenuClose} >Parcels</Link></li>
                     <li><Link to='/send' onClick={handleMenuClose}>Send</Link></li>
                     <li><Link to='/about' onClick={handleMenuClose}>About</Link></li>
-
-                    { (loginStatus && isAdmin) ? <li><Link to='/admindashboard' onClick={handleMenuClose}>Dashboard</Link></li> : ""}
+                    { isAdmin===1 && <li><Link to='/admindashboard' onClick={handleMenuClose}>Dashboard</Link></li>}
                     
                     {/* <li><Link to='/signup'>Sign up</Link></li> */}
                 </ul>
             </nav>
             {loginStatus ?
                 <button id={css.logoutBtn} onClick={() => {
-                    const status = dispatch(LoginAction({ "loggedIn": false }));
+                    dispatch(LogoutAction());
                     localStorage.removeItem('x-access-token');
                     localStorage.removeItem('x-access-token-expiration');
+                    notifySuccess('Successfully logged out');
                     navigate('/');
                 }}>Log out</button>
                 :

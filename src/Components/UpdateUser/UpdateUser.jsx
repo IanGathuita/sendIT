@@ -10,7 +10,8 @@ export default function UpdateUser(props){
     const id = location.state.id;
     let userToEdit;
     const allUsers = useSelector(state => state.allUsers);
-   
+    const dispatch = useDispatch();
+    
     if(allUsers){
         function getUserToEdit(allUsers, userId){
             const userToEdit = allUsers.filter(user => user.id == userId);
@@ -64,25 +65,24 @@ export default function UpdateUser(props){
                     <button onClick={
                         (e) => {
                             e.preventDefault();
-                            fetch('/api/updateuser', {
+                            // dispatch(UpdateUserAction(user));
+                            fetch('http://localhost:4000/api/updateuser', {
                                 method:"PUT",
                                 headers:
-                                    { "content-type": "application/json", 'x-access-token': localStorage.getItem('x-access-token') },
+                                    { "content-type": "application/json", 'authorization': localStorage.getItem('x-access-token') },
                                  body: JSON.stringify(user)
                             })
                             .then(res => res.json())
-                            .then(data => {
+                            .then(data =>{
+                                if(data.message){
+                                    notifySuccess(data.message);
+                                }
                                 if(data.err){
                                     notifyFailure(data.err);
                                 }
-                                else{
-                                    notifySuccess(data.message);
-                                }
-                            })
-                            .catch(e => {
-                                console.log(e.message);
-                                notifyFailure(e.message);
-                            });
+                            }
+                            )
+                            .catch(e => console.log(e.message));
                         }
 
                     }>Update user</button>

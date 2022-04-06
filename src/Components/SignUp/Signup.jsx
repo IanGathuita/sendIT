@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
 import css from './SignUp.css';
 import 'react-toastify/dist/ReactToastify.css';
 import notifyFailure from '../../Helpers/notifyFailure';
 import notifySuccess from '../../Helpers/notifySuccess';
+import {useDispatch, useSelector} from 'react-redux';
+import { SignUpAction } from '../../Redux/Actions/UsersActions';
+import { SIGN_UP_FAILURE } from '../../Redux/Constants';
 
 function handleNextSection(e){
     e.preventDefault();
@@ -19,6 +22,13 @@ function handlePreviousSection(e){
 export default function SignUp() {
     const [currentSection,setCurrentSection] = useState(1);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const isLoggedIn = useSelector(state => state.loggedIn);
+    const error = useSelector(state => state.error);
+    const message = useSelector(state => state.message);
+    console.log('LOGGED IN?',isLoggedIn);
+    console.log('Error?',error);
+    console.log('message?',message);
 
     const [user,setUser] = useState({
         fullName: "",
@@ -29,6 +39,41 @@ export default function SignUp() {
         passwordConfirmation: "",
 
     });
+
+    if(isLoggedIn){
+        notifySuccess("Sign up successful");
+        navigate('/');
+    }
+
+    useEffect(() => {
+        console.log('message: ',message)
+        if (message) {            
+            notifySuccess(message);           
+        }
+    },[message]);
+
+    useEffect(() => {
+        console.log(typeof(error.err))
+        if (error.err) {
+            
+            if (typeof (error.err) === 'object') {
+                //loop through array of error objects 
+                let errors = "";
+                error.err.forEach((errObj) => {
+                    errors = `${errors} ${errObj.message} ` + '\n';
+
+                });
+                notifyFailure(errors);
+            } else {
+                notifyFailure(error.err);
+            }
+            dispatch({
+                type: SIGN_UP_FAILURE,
+                error: ""
+            });
+        }
+
+    }, [error]);
 
     
 
@@ -74,39 +119,34 @@ export default function SignUp() {
                     (e) => {
                         e.preventDefault();
                         const signupBody = JSON.stringify({ "full_name":user.fullName,username: user.username,"phone_number":user.phoneNumber,email:user.email,password:user.password,passwordConfirmation:user.passwordConfirmation });
-                        console.log(signupBody);
-                        fetch("/api/user", { method: "POST", headers: { "content-type": "application/json" }, body: signupBody })
-                            .then(res => res.json())
-                            .then( message =>{ 
-                                if(message.successMessage){
-                                    notifySuccess("Sign up successful. You may now log in.");
-                                    navigate('/login')
-                                }
-                                
-                                else if(message['validation error']){
-                                    message['validation error'].forEach((error) => {
-                                        notifyFailure(error.message);
-                                    })
+                        dispatch(SignUpAction(signupBody));
+                    //     fetch("/api/user", { method: "POST", headers: { "content-type": "application/json" }, body: signupBody })
+                    //         .then(res => res.json())
+                    //         .then( message =>{ 
+                    //             if(message.successMessage){
+                    //                 console.log(message);
+                    //                 console.log('success')
+                    //                 notifySuccess("Sign up successful");
+                    //                 navigate('/login')
+                    //             }
+                    //             else if(message.err)
+                    //             {                                    
+                    //                 notifyFailure(message.err);
+                    //                 console.log('failed')
+                    //                 console.log(message.err)
                                     
-                                } 
-                                
-                                else if(message.err)
-                                {                                   
-                                    notifyFailure(message.err);
-                                    console.log('failed')
-                                    console.log(message.err)
+                    //             }
+                    //             else
+                    //             {   
+                    //                 notifyFailure("error");                              
+                    //                 console.log(message)
                                     
-                                }
-                                else
-                                {   
-                                    notifyFailure("error");                              
-                                    console.log(message)
-                                    
-                                }
-                            })
-                            .catch(e => {
-                                notifyFailure(e.message);
-                            })
+                    //             }
+                    //         })
+                    //         .catch(e => {
+                    //             notifyFailure(e.message);
+                    //             console.log('failed')
+                    //             console.log(e.message)})
                     }
                 }>Submit</button>
                 

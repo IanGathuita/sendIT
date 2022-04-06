@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch} from "react-redux";
 import notifySuccess from "../../Helpers/notifySuccess";
 import notifyFailure from "../../Helpers/notifyFailure";
 export default function UpdateParcel(props){
@@ -8,6 +8,7 @@ export default function UpdateParcel(props){
     const id = location.state.id;
     let parcelToEdit;
     const allParcels = useSelector(state => state.allParcels);
+    const dispatch = useDispatch();
     if(allParcels){
         function getParcelToEdit(allParcels, parcelId){
             const parcelToEdit = allParcels.filter(parcel => parcel.id == parcelId);
@@ -77,22 +78,25 @@ export default function UpdateParcel(props){
                         (e) => {
                             e.preventDefault();
                             console.log(parcel);
-                            fetch('/api/updateparcel', {
+                            // dispatch(UpdateParcel(parcel));
+                            fetch('http://localhost:4000/api/updateparcel', {
                                 method:"PUT",
                                 headers:
-                                    { "content-type": "application/json", 'x-access-token': localStorage.getItem('x-access-token') },
+                                    { "content-type": "application/json", 'authorization': localStorage.getItem('x-access-token') },
                                  body: JSON.stringify(parcel)
                             })
                             .then(res => res.json())
                             .then(data => {
+                                if(data.message){
+                                    notifySuccess(data.message);
+                                }
                                 if(data.err){
                                     notifyFailure(data.err);
                                 }
-                                else{
-                                    notifySuccess(data.message);
-                                }
-                            })
-                            .catch(e => notifyFailure(e.message));
+                                
+                            }
+                            )
+                            .catch(e => console.log(e.message));
 
                         }
 

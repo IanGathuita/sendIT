@@ -85,6 +85,13 @@ button+a{
   background-color: var(--colorTertiary);
 }
 
+.Toastify__toast-body{
+  white-space: pre-line;
+}
+svg{
+  cursor: pointer;
+}
+
 @media only screen and (min-width:768px) {
   section{
     padding: 32px 0;

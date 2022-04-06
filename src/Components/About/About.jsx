@@ -1,5 +1,5 @@
 import globe from '../../Images/globe.png';
-import css from './About.css';
+import  './About.css';
 import {FaFacebook} from "react-icons/fa";
 import {FaPhone} from 'react-icons/fa';
 import {FaEnvelope} from 'react-icons/fa';

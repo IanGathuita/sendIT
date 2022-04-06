@@ -1,4 +1,4 @@
-import package_delivery_image from '../Images/Package delivery.png';
+import package_delivery_image from '../../Images/Package delivery.png';
 import siteIntro from './SiteIntro.css';
 export default function SiteIntro(){
     return(

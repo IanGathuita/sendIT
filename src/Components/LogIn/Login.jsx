@@ -1,31 +1,73 @@
 import validateEmail from "../../Helpers/validation";
-import { useState } from "react";
+
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useState,useEffect } from "react";
 import { useDispatch,useSelector } from "react-redux";
-import { LoginAction } from "../../Redux/Actions/LoginActions";
-import { IsAdminAction } from "../../Redux/Actions/IsAdminAction";
-import { useEffect } from "react";
-import css from './Login.css';
 import notifySuccess from "../../Helpers/notifySuccess";
 import notifyFailure from "../../Helpers/notifyFailure";
+import { LOG_IN_FAILURE } from "../../Redux/Constants";
+
+import { LoginAction } from "../../Redux/Actions/UsersActions";
+
+
 
 
 export default function Login(){
+    const [isLoginToastShown,setIsloginToastShown] = useState(false);
+    const loginStatus = useSelector(state => state.loggedIn);
+    const token = useSelector(state => state.token);
+    const error = useSelector(state => state.error);
+    useEffect(() => {
+        if (loginStatus) {
+            localStorage.setItem('x-access-token', token);
+            localStorage.setItem('x-access-token-expiration', Date.now() + 3 * 24 * 60 * 60 * 1000); //3 days in ms
+            if(isLoginToastShown === false){
+              setIsloginToastShown(true);
+              notifySuccess("Successfully logged in.");
+            }
+            navigate('/');
+        }
+    },[loginStatus]);
+
+    useEffect(() => {
+        if(error.err){            
+            notifyFailure(error.err);
+            dispatch({
+                type: LOG_IN_FAILURE,
+                error: ""
+            });
+        }
+
+    },[error]);
 
     const [user,setUser] = useState({        
         email: "",
         password: "",
-    });   
+    }); 
+    
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const loginStatus = useSelector(state => state.loggedIn);
-    const isAdmin = useSelector(state => state.isAdmin);
-       
+    
+    
+    
+    // const isAdmin = useSelector(state => state.isAdmin);
+    // const error = useSelector(state => state.error);
+    
+
+    // if (loginStatus) {
+    //     navigate('/');
+
+    // }
+    // else {
+    //     notifyFailure("lOGIN ERROR");
+    //     dispatch(IsLoggedInAction({ "loggedIn": false }));
+
+    // }
+    
      
     return(
-        <section>
-            
+        <section>          
 
             <h1>Login</h1>
             <form className="form-desktop">
@@ -39,37 +81,31 @@ export default function Login(){
                         setUser({...user, password : e.target.value})
                     }}></input><br></br>
                 <button onClick={
-                    (e) => {
+                    async (e) => {
                         e.preventDefault();
                         const loginBody = JSON.stringify({ email:user.email, password:user.password});
-                        fetch("/api/login", { method: "POST", headers: 
-                              { "content-type": "application/json",'x-access-token': localStorage.getItem('x-access-token') },
-                             body: loginBody })
-                            .then(res => res.json())
-                            .then(resJson => {
-                                console.log("resjson", resJson)
-                                if(resJson.token){                                    
-                                    dispatch( LoginAction({"loggedIn":true}) );
-                                    dispatch(IsAdminAction(false));
-                                    if(resJson.is_admin === 1){
-                                        dispatch(IsAdminAction(true));
-                                    }
-                                    
-                                    localStorage.setItem('x-access-token', resJson.token);
-                                    localStorage.setItem('x-access-token-expiration', Date.now() + 3 * 24 * 60 * 60 * 1000); //3 days in ms
-                                    notifySuccess("Successfully logged in.");
-                                    navigate('/');
-                                }
-                                else{
-                                    notifyFailure(resJson.err);
-                                    dispatch( LoginAction({"loggedIn":false}) );
-                                    dispatch(IsAdminAction(false));
-                                }
-                            })
-                            .catch(e => {
-                                notifyFailure(e.message);
-                                console.log(e.message)
-                            });
+                        dispatch(LoginAction(loginBody));
+
+                        // fetch("/api/login", { method: "POST", headers: 
+                        //       { "content-type": "application/json",'x-access-token': localStorage.getItem('x-access-token') },
+                        //      body: loginBody })
+                        //     .then(res => res.json())
+                        //     .then(resJson => {
+                        //         if(resJson.token){                                    
+                        //             dispatch( LoginAction({"loggedIn":true}) );
+                        //             localStorage.setItem('x-access-token', resJson.token);
+                        //             localStorage.setItem('x-access-token-expiration', Date.now() + 3 * 24 * 60 * 60 * 1000); //3 days in ms
+                        //             notifySuccess("Successfully logged in.");
+                        //             navigate('/');
+                        //         }
+                        //         else{
+                        //             notifyFailure(resJson.err);
+                        //             dispatch( IsLoggedInAction({"loggedIn":false}) );
+                        //         }
+                        //     })
+                        //     .catch(e => {
+                        //         notifyFailure(e.message);
+                        //     });
                     }
                 }>Submit</button>
                 <Link to="/ForgotPassword">Forgot password?</Link>                

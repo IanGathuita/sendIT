@@ -7,63 +7,67 @@ import css from './UserRecords.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { DeleteUserAction } from '../../Redux/Actions/DeleteUserAction';
 import { useEffect } from 'react';
-import { AllUsersAction } from '../../Redux/Actions/AllUsersAction';
 import { useState } from 'react';
+import { GetUsersAction } from '../../Redux/Actions/UsersActions';
 import notifySuccess from "../../Helpers/notifySuccess";
 import notifyFailure from "../../Helpers/notifyFailure";
+import { GET_ALL_USERS } from '../../Redux/Constants';
 
-const deleteUser = (id, is_deleted) => {
-    if (is_deleted !== 1) {
-        is_deleted = 1;
-    }
-    fetch("/deleteuser",
-        {
-            method: "DELETE",
-            headers:
-                { "content-type": "application/json", 'x-access-token': localStorage.getItem('x-access-token') },
-            body: JSON.stringify({ id, is_deleted })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.err){
-                notifyFailure(data.err);
-            }
-            else{
-                notifySuccess(data.message);
-            }
-        })
-        .catch(e => {
-            console.log(e.message);
-            notifyFailure(e.message);
-        })
 
-}
 
 
 export default function UserRecords() {
-    const navigate = useNavigate();
-
-    
+    const navigate = useNavigate();    
     const allUsers = useSelector(state => state.allUsers);
-    //a value that changes when an item is deleted hence refreshing the page
-    const [refresh,setRefresh] = useState(0);
+    const error = useSelector(state => state.error);
+    console.log("all users ", allUsers,"error, ", error);
 
+    const deleteUser = (user) => {
+        if (user.is_deleted !== 1) {
+            user.is_deleted = 1;
+        }
+        fetch("http://localhost:4000/deleteuser",
+            {
+                method: "DELETE",
+                headers:
+                    { "content-type": "application/json", 'authorization': localStorage.getItem('x-access-token') },
+                body: JSON.stringify({ 'id':user.id, 'is_deleted':user.is_deleted })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.err){
+                    notifyFailure(data.err);
+                }
+                else{
+                    notifySuccess(data.message);
+                    dispatch(DeleteUserAction({ 'id' : user.id,'is_deleted':user.is_deleted}));
+                }
+            })
+            .catch(e => {
+                console.log(e.message);
+                notifyFailure(e.message);
+            })
+    
+    }
+    useEffect(() => {
+        if(error.err){       
+            notifyFailure(error.err);
+        }
+        dispatch({
+            type: GET_ALL_USERS,
+            error: ""
+        });        
 
-
+    },[error]);
+    
+   
     const dispatch = useDispatch();
     useEffect(() => {
-        async function fetchUsers() {
-            let response = await fetch('/api/users', {
-                headers:
-                    { "content-type": "application/json", 'x-access-token': localStorage.getItem('x-access-token') }
-            });
-            let allUsers = await response.json();
-
-            dispatch(AllUsersAction({ "allUsers": allUsers.users }))
-            console.log(allUsers);
+        async function fetchUsers() {            
+            dispatch(GetUsersAction())
         }
         fetchUsers();
-    }, [refresh]);
+    }, []);
 
     return (allUsers ? (allUsers.length > 0 ?
         allUsers.map((user) => {
@@ -74,10 +78,8 @@ export default function UserRecords() {
                     <i onClick={() => {
                         navigate("/updateuser", { state: { id:user.id } })
                     }}><FaEdit /></i>
-                    <i onClick={() => {
-                        deleteUser(user.id, user.is_deleted);
-                        dispatch(DeleteUserAction({ id : user.id}));
-                        setRefresh(refresh +1)
+                    <i onClick={() => { 
+                        deleteUser(user);                       
                         
                     }}><FaTrash /></i>
                     {/* <button className='btnWithIcon'>View user<FaChevronRight/></button> */}

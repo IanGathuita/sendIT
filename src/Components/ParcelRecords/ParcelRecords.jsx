@@ -5,56 +5,68 @@ import { FaTrash } from 'react-icons/fa';
 import css from '../UserRecords/UserRecords.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { AllParcelsAction } from '../../Redux/Actions/AllParcelsAction';
+import { GetParcelsAction } from '../../Redux/Actions/UsersActions';
 import notifySuccess from "../../Helpers/notifySuccess";
 import notifyFailure from "../../Helpers/notifyFailure";
 
 import { DeleteParcelAction } from '../../Redux/Actions/DeleteParcelAction';
-const deleteParcel = (id, is_deleted) => {
-    if (is_deleted !== 1) {
-        is_deleted = 1;
-    }
-    fetch(`api/parcels/${id}/cancel`, {
-        method: "DELETE",
-        headers:
-            { "content-type": "application/json", 'x-access-token': localStorage.getItem('x-access-token') },
-        body: JSON.stringify({ is_deleted })
-    })
-        .then(res => res.json())
-        .then(data => {
-            if(data.err){
-                notifyFailure(data.err);
-            }
-            else{
-                notifySuccess(data.message);
-            }
-        })
-        .catch(e => console.log(e.message))
-
-}
+import { GET_ALL_PARCELS } from '../../Redux/Constants';
 
 
 export default function ParcelRecords({ description, id, is_deleted }) {
     const navigate = useNavigate();
+    const allParcels = useSelector(state => state.allParcels);
+    const error = useSelector(state => state.error);
+    console.log("parcels ",allParcels, "parcels errors: ",error)
     const dispatch = useDispatch();
+    
     useEffect(() => {
-        async function fetchParcels() {
-            let response = await fetch('/api/parcels', {
-                headers:
-                    { "content-type": "application/json", 'x-access-token': localStorage.getItem('x-access-token') }
-            });
-            let parcels = await response.json();
-
-
-            dispatch(AllParcelsAction({ "allParcels": parcels.parcels }))
-            console.log(parcels.length);
-        }
+        function fetchParcels() {            
+            dispatch(GetParcelsAction());        }
         fetchParcels();
     }, []);
+    
+    useEffect(() => {
+        if(error.err){       
+            notifyFailure(error.err);
+        }
+        dispatch({
+            type: GET_ALL_PARCELS,
+            error: ""
+        });        
 
-    const allParcels = useSelector(state => state.allParcels);
-    //a value that changes when an item is deleted hence refreshing the page
-    const [refresh, setRefresh] = useState(0);
+    },[error]);
+
+    const deleteParcel = (parcel) => {
+        
+        if (parcel.is_deleted !== 1) {
+            parcel.is_deleted = 1;
+        }
+        fetch(`http://localhost:4000/api/parcels/${parcel.id}/cancel`, {
+            method: "DELETE",
+            headers:
+                { "content-type": "application/json", 'authorization': localStorage.getItem('x-access-token') },
+            body: JSON.stringify({ 'is_deleted': parcel.is_deleted })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if(data.message){
+                    notifySuccess(data.message);
+                    dispatch(DeleteParcelAction({id:parcel.id,is_deleted}))
+                    
+                }
+                if(data.err){
+                    notifyFailure(data.err);
+                }
+            })
+            .catch(e => {
+                console.log(e.message);
+                notifyFailure(e.message);
+            })
+            
+    
+    }
+    
 
     return (allParcels ? (allParcels.length > 0 ?
         allParcels.map((parcel) => {
@@ -66,9 +78,9 @@ export default function ParcelRecords({ description, id, is_deleted }) {
                         navigate("/updateparcel", { state: { id:parcel.id } })
                     }}><FaEdit /></i>
                     <i onClick={() => {
-                        deleteParcel(parcel.id, parcel.is_deleted);
-                        dispatch(DeleteParcelAction(parcel.id))
-                        setRefresh(refresh+1)
+                        deleteParcel(parcel);                        
+                            
+                                             
                     }}><FaTrash /></i>
                 </div>
             );

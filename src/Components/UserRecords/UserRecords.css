@@ -19,7 +19,6 @@
 .record i{
     flex-basis: 10%;
     flex-grow: 0;
-    cursor: pointer;
 }
 
 @media only screen and (min-width:768px) {
