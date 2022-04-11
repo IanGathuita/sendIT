@@ -54,13 +54,13 @@
     z-index: -1;
     border-radius: 16px;
 }
-.step:nth-child(3){
+/* .step:nth-child(3){
     border-color: var(--colorTertiary);
     background-color: var(--colorTertiary);
 }
 .step:nth-child(3) i{
     color:white;
-}
+} */
 @media only screen and (min-width:768px) {
     .step{
         width: 125px;

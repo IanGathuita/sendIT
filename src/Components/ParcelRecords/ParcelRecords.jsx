@@ -21,6 +21,11 @@ export default function ParcelRecords({ description, id, is_deleted }) {
     const dispatch = useDispatch();
     
     useEffect(() => {
+        const parcelRecordsScrollPosition = sessionStorage.getItem('parcelRecordsScrollPosition');
+        if(parcelRecordsScrollPosition){
+            window.scrollTo(parcelRecordsScrollPosition);
+            return;
+        }
         function fetchParcels() {            
             dispatch(GetParcelsAction());        }
         fetchParcels();
@@ -78,7 +83,8 @@ export default function ParcelRecords({ description, id, is_deleted }) {
                         navigate("/updateparcel", { state: { id:parcel.id } })
                     }}><FaEdit /></i>
                     <i onClick={() => {
-                        deleteParcel(parcel);                        
+                        sessionStorage.setItem('parcelRecordsScrollPosition', window.pageYOffset);
+                        deleteParcel(parcel);                     
                             
                                              
                     }}><FaTrash /></i>

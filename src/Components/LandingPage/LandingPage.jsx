@@ -6,9 +6,6 @@ import SiteIntro from '../SiteIntro/SiteIntro';
 
 import Benefits from '../Benefits/Benefits';
 export default function LandingIntro(props){
-    
-    
-    
     return(
         <>
             <SiteIntro/>

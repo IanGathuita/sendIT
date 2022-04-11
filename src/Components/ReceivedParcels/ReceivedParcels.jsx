@@ -32,7 +32,7 @@ export default function ReceivedParcels() {
             
             return (
                 <div key={parcel.id}>
-                    <Parcel parcelDescription={parcel.description}></Parcel>
+                    <Parcel parcelDescription={parcel.description} status="Received"></Parcel>
                 </div>
             );
 

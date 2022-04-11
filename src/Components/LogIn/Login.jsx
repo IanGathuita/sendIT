@@ -51,20 +51,6 @@ export default function Login(){
     
     
     
-    // const isAdmin = useSelector(state => state.isAdmin);
-    // const error = useSelector(state => state.error);
-    
-
-    // if (loginStatus) {
-    //     navigate('/');
-
-    // }
-    // else {
-    //     notifyFailure("lOGIN ERROR");
-    //     dispatch(IsLoggedInAction({ "loggedIn": false }));
-
-    // }
-    
      
     return(
         <section>          
@@ -85,27 +71,6 @@ export default function Login(){
                         e.preventDefault();
                         const loginBody = JSON.stringify({ email:user.email, password:user.password});
                         dispatch(LoginAction(loginBody));
-
-                        // fetch("/api/login", { method: "POST", headers: 
-                        //       { "content-type": "application/json",'x-access-token': localStorage.getItem('x-access-token') },
-                        //      body: loginBody })
-                        //     .then(res => res.json())
-                        //     .then(resJson => {
-                        //         if(resJson.token){                                    
-                        //             dispatch( LoginAction({"loggedIn":true}) );
-                        //             localStorage.setItem('x-access-token', resJson.token);
-                        //             localStorage.setItem('x-access-token-expiration', Date.now() + 3 * 24 * 60 * 60 * 1000); //3 days in ms
-                        //             notifySuccess("Successfully logged in.");
-                        //             navigate('/');
-                        //         }
-                        //         else{
-                        //             notifyFailure(resJson.err);
-                        //             dispatch( IsLoggedInAction({"loggedIn":false}) );
-                        //         }
-                        //     })
-                        //     .catch(e => {
-                        //         notifyFailure(e.message);
-                        //     });
                     }
                 }>Submit</button>
                 <Link to="/ForgotPassword">Forgot password?</Link>                

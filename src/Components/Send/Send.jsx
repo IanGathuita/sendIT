@@ -180,15 +180,7 @@ export default function Send(){
                         console.log(sendParcelBody);
                         dispatch(SendParcelAction(sendParcelBody));
 
-                        // fetch("/api/parcels", { method: "POST", headers: 
-                        //       { "content-type": "application/json",'x-access-token': localStorage.getItem('x-access-token') },
-                        //      body: sendParcelBody })
-                        //     .then(res => res.json())
-                        //     .then(resJson => {                                
-                        //         console.log(resJson);
-                        //         navigate('/parcels');
-                        //     })
-                        //     .catch(e => console.log(e.message))
+                        
                     }
                 }>Send parcel</button>
             </form>

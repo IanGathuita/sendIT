@@ -6,9 +6,10 @@ import { GetSentParcelsAction } from "../../Redux/Actions/UsersActions";
 
 
 export default function SentParcels() {
-    // const [sentParcels, setSentParcels] = useState("");
+    
     const loginStatus = useSelector(state => state.loggedIn);
     const sentParcels = useSelector(state => state.sentParcels);
+    let parcelStatus;
     console.log("Sent parcels ", sentParcels)
     const dispatch = useDispatch();
 
@@ -29,10 +30,20 @@ export default function SentParcels() {
         loginStatus ?
         sentParcels ?  (sentParcels.length > 0 ?
         sentParcels.map((parcel) => {
+            {
+                
+                if(parcel.is_delivered){
+                    parcelStatus = 'Delivered';
+                }
+                else{
+                    parcelStatus = 'Sent';
+                }
+
+            }
             
             return (
                 <div key={parcel.id}>
-                    <Parcel parcelDescription={parcel.description}></Parcel>
+                    <Parcel parcelDescription={parcel.description} status={parcelStatus}></Parcel>
                 </div>
             );
 

@@ -6,7 +6,7 @@ import notifyFailure from '../../Helpers/notifyFailure';
 import notifySuccess from '../../Helpers/notifySuccess';
 import {useDispatch, useSelector} from 'react-redux';
 import { SignUpAction } from '../../Redux/Actions/UsersActions';
-import { SIGN_UP_FAILURE } from '../../Redux/Constants';
+import { SIGN_UP_FAILURE, SIGN_UP_SUCCESS } from '../../Redux/Constants';
 
 function handleNextSection(e){
     e.preventDefault();
@@ -26,9 +26,6 @@ export default function SignUp() {
     const isLoggedIn = useSelector(state => state.loggedIn);
     const error = useSelector(state => state.error);
     const message = useSelector(state => state.message);
-    console.log('LOGGED IN?',isLoggedIn);
-    console.log('Error?',error);
-    console.log('message?',message);
 
     const [user,setUser] = useState({
         fullName: "",
@@ -40,19 +37,21 @@ export default function SignUp() {
 
     });
 
-    if(isLoggedIn){
-        notifySuccess("Sign up successful");
-        navigate('/');
-    }
 
     useEffect(() => {
         console.log('message: ',message)
         if (message) {            
-            notifySuccess(message);           
+            notifySuccess('Account created successfully. You may now log in.');
+            navigate('/login');
+            dispatch({
+                type: SIGN_UP_SUCCESS,
+                message: ""
+            });         
         }
     },[message]);
 
     useEffect(() => {
+        console.log(error);
         console.log(typeof(error.err))
         if (error.err) {
             
@@ -110,7 +109,7 @@ export default function SignUp() {
                         setUser({...user, password : e.target.value})
                     }}></input><br></br>
                     <label>Confirm password</label><br></br>
-                    <input id="confirmPassword" type="confirmPpassword" value={user.passwordConfirmation} onChange={ (e) => {
+                    <input id="confirmPassword" type="password" value={user.passwordConfirmation} onChange={ (e) => {
                         setUser({...user, passwordConfirmation : e.target.value})
                     }}></input><br></br>
                     <div className='form-buttons'>
@@ -118,35 +117,12 @@ export default function SignUp() {
                     <button onClick={
                     (e) => {
                         e.preventDefault();
+                        if(user.password !== user.passwordConfirmation){
+                            notifyFailure('Password must match with its confirmation');
+                            return;
+                        }
                         const signupBody = JSON.stringify({ "full_name":user.fullName,username: user.username,"phone_number":user.phoneNumber,email:user.email,password:user.password,passwordConfirmation:user.passwordConfirmation });
                         dispatch(SignUpAction(signupBody));
-                    //     fetch("/api/user", { method: "POST", headers: { "content-type": "application/json" }, body: signupBody })
-                    //         .then(res => res.json())
-                    //         .then( message =>{ 
-                    //             if(message.successMessage){
-                    //                 console.log(message);
-                    //                 console.log('success')
-                    //                 notifySuccess("Sign up successful");
-                    //                 navigate('/login')
-                    //             }
-                    //             else if(message.err)
-                    //             {                                    
-                    //                 notifyFailure(message.err);
-                    //                 console.log('failed')
-                    //                 console.log(message.err)
-                                    
-                    //             }
-                    //             else
-                    //             {   
-                    //                 notifyFailure("error");                              
-                    //                 console.log(message)
-                                    
-                    //             }
-                    //         })
-                    //         .catch(e => {
-                    //             notifyFailure(e.message);
-                    //             console.log('failed')
-                    //             console.log(e.message)})
                     }
                 }>Submit</button>
                 
