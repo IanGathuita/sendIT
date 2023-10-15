@@ -34,6 +34,13 @@ stages:
       inputs:
         versionSpec: '10.x'
       displayName: 'Install Node.js'
+      
+    - task: AzureKeyVault@2
+      inputs:
+        azureSubscription: 'Azure subscription 1 (72b4d2b8-14fe-4766-a0a4-8dfa8f9c282c)'
+        KeyVaultName: 'kvault-prod-eastus-1'
+        SecretsFilter: 'SERVER=HOST_NAME, USER = USER_NAME, PASSWORD,DBNAME=DB_NAME,PORT,SECRET' # The secrets with a =, part before equals is the name in azure, part after equals is a DIFFERENT name that i want to be used for the environment variable
+        RunAsPreJob: false
 
     - script: |
         npm install
