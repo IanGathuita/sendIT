@@ -40,7 +40,7 @@ stages:
         azureSubscription: 'Azure subscription 1 (72b4d2b8-14fe-4766-a0a4-8dfa8f9c282c)'
         KeyVaultName: 'kvault-prod-eastus-1'
         SecretsFilter: 'SERVER, USER, PASSWORD,DBNAME,PORT,SECRET'
-        RunAsPreJob: false
+        RunAsPreJob: true
 
     - script: |
         npm install
